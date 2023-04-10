@@ -9,34 +9,49 @@ import SwiftUI
 
 var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"]
 
-struct GuessTheFlagGame {
-    let correctAnswer = Int.random(in: 0...2)
-    var randomCountries = Set<String>()
-    
-    init() {
-        while randomCountries.count < 3 {
-            let randomCountry = countries.randomElement()
-            
-            guard let randomCountry = randomCountry else {
-                continue
+struct ContentView: View {
+    struct GuessTheFlagGame {
+        let correctAnswerIndex = Int.random(in: 0...2)
+        var randomCountries = [String]()
+        var correctAnswer: String {
+            get {
+                randomCountries[correctAnswerIndex]
             }
-            
-            if !randomCountries.contains(randomCountry) {
-                randomCountries.insert(randomCountry)
+        }
+        
+        init() {
+            while randomCountries.count < 3 {
+                let randomCountry = countries.randomElement()
+                
+                guard let randomCountry = randomCountry else {
+                    continue
+                }
+                
+                if !randomCountries.contains(randomCountry) {
+                    randomCountries.append(randomCountry)
+                }
             }
         }
     }
-}
 
-struct ContentView: View {
-    var correctAnswer = Int.random(in: 0...countries.count)
+    let game = GuessTheFlagGame()
 
     var body: some View {
-        VStack {
-            Text("Tap the flag of")
-            Text(countries[correctAnswer])
+        VStack(spacing: 30) {
+            VStack {
+                Text("Tap the flag of")
+                Text(game.correctAnswer)
+            }
+            
+            ForEach(0..<game.randomCountries.count, id: \.self) { country in
+                Button {
+                    
+                } label: {
+                    Image(game.randomCountries[country])
+                        .renderingMode(.original)
+                }
+            }
         }
-        .padding()
     }
 }
 
